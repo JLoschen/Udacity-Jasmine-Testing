@@ -9,114 +9,90 @@
  * to ensure they don't run until the DOM is ready.
  */
 $(function() {
-    /* This is our first test suite - a test suite just contains
-    * a related set of tests. This suite is all about the RSS
+    /*This test suite is all about the RSS
     * feeds definitions, the allFeeds variable in our application.
     */
     describe('RSS Feeds', function() {
-        /* This is our first test - it tests to make sure that the
-         * allFeeds variable has been defined and that it is not
-         * empty. Experiment with this before you get started on
-         * the rest of this project. What happens when you change
-         * allFeeds in app.js to be an empty array and refresh the
-         * page?
-         */
+        //Test to make sure the allFeeds variable is defined
+        //subsequent tests depend on the allFeeds variable so test it first
         it('are defined', function() {
             expect(allFeeds).toBeDefined();
             expect(allFeeds.length).not.toBe(0);
         });
 
 
-        /* TODO: Write a test that loops through each feed
-         * in the allFeeds object and ensures it has a URL defined
-         * and that the URL is not empty.
-         */
+        // Make sure feeds that load from the allFeeds array 
+        // in app.js have a non empty URL
         it('all Feeds have non empty URL\'s', function() {
-            for(var i = 0; i < allFeeds.length; i++){
-                var feed = allFeeds[i];
-                expect(feed.url).toBeDefined();
-                expect(feed.url).not.toBe('');
-            }
+            
+            allFeeds.forEach(function(feed){
+                expect(feed.url).toBeTruthy();
+            })
         });
 
-        /* TODO: Write a test that loops through each feed
-         * in the allFeeds object and ensures it has a name defined
-         * and that the name is not empty.
-         */
+        // Make sure feeds that load from the allFeeds array in app.js
+        // have a name
         it('all Feeds have non empty name\'s', function() {
-            for(var i = 0; i < allFeeds.length; i++){
-                var feed = allFeeds[i];
-                expect(feed.name).toBeDefined();
-                expect(feed.name).not.toBe('');
-            }
+            //for(var i = 0; i < allFeeds.length; i++){
+            allFeeds.forEach(function(feed){
+              //  var feed = allFeeds[i];
+                expect(feed.name).toBeTruthy();
+            })
         });
     });
 
-    /* TODO: Write a new test suite named "The menu" */
+    //Testing sided menu that hides/shows with top left button
      describe('The Menu', function() {
-        /* TODO: Write a test that ensures the menu element is
-         * hidden by default. You'll have to analyze the HTML and
-         * the CSS to determine how we're performing the
-         * hiding/showing of the menu element.
-         */
+        
+         //make sure side menu doens't fly out til user asks for it
          it('is hidden by default', function(){
             expect($('body').hasClass('menu-hidden')).toBe(true);
          });
          
-         /* TODO: Write a test that ensures the menu changes
-          * visibility when the menu icon is clicked. This test
-          * should have two expectations: does the menu display when
-          * clicked and does it hide when clicked again.
-          */
+         //Test to make sure clicking the menu button
+         // adds and removes the class for hiding the menu.
+         //Note:this test assumes the menu starts hidden
          it('hides and shows when clicked.', function(){
-             
              var menuButton = $('.menu-icon-link');
-             var slideMenu = $('slide-menu');
              
-             if($('body').hasClass('menu-hidden')){
-                 menuButton.click();
-                 expect($('body').hasClass('menu-hidden')).toBe(false);
-             }
-             if(!$('body').hasClass('menu-hidden')){
-                 menuButton.click();
-                 expect($('body').hasClass('menu-hidden')).toBe(true);
-             }
+             menuButton.click();
+             expect($('body').hasClass('menu-hidden')).toBe(false);
+
+             menuButton.click();
+             expect($('body').hasClass('menu-hidden')).toBe(true);
          });
  
      });
         
-    /* TODO: Write a new test suite named "Initial Entries" */
+    // Test to make sure can successfully get atleast 1 feed
+    //  and place it in the html.
+    // Note:this assumes the feed actually has entries
     describe('Initial Entries', function() {
-        /* TODO: Write a test that ensures when the loadFeed
-         * function is called and completes its work, there is at least
-         * a single .entry element within the .feed container.
-         * Remember, loadFeed() is asynchronous so this test will require
-         * the use of Jasmine's beforeEach and asynchronous done() function.
-         */
+        
+        //loadFeed is asynchronous so call 'done' function in it's call back
+        //then test will run
         beforeEach(function(done) {
             
             //load index 0 which is the udacity blog
-            loadFeed(0,function (){
+            loadFeed(0,function (){                
                 done();
             });   
         });
         
         it('contains atleast one entry once loaded', function(done){
-            expect($('.entry').length).toBeGreaterThan(0);
+            expect($('.feed .entry').length).toBeGreaterThan(0);
             done();
         });
     });
 
-    /* TODO: Write a new test suite named "New Feed Selection" */
+    //Test what happens when a second blog is loaded
     describe('New Feed Selection', function(){
-        /* TODO: Write a test that ensures when a new feed is loaded
-         * by the loadFeed function that the content actually changes.
-         * Remember, loadFeed() is asynchronous.
-         */
+        
+        //to set up test initially load udacity blog
         var firstFeed = '';
         beforeEach(function(done) {
             
-            //load udacity blog initially
+            //load udacity blog
             loadFeed(0,function (){
                 
                 //get udacity feed html
@@ -127,12 +103,14 @@ $(function() {
             
         it('contents change when new feed is loaded', function (done){
             
-            //load css tricks blog with no call back
+            //load css tricks blog 
             loadFeed(1, function (){
                 
                 //get html of css tricks
                 var secondFeed = $('.feed').html();
                 
+                //make sure the html changed 
+                //Note this test only checks for changes, it doesn't ensure valid html
                 expect(firstFeed).not.toBe(secondFeed);
                 done();
             });   
