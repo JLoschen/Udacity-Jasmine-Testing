@@ -27,17 +27,16 @@ $(function() {
             
             allFeeds.forEach(function(feed){
                 expect(feed.url).toBeTruthy();
-            })
+            });
         });
 
         // Make sure feeds that load from the allFeeds array in app.js
         // have a name
         it('all Feeds have non empty name\'s', function() {
-            //for(var i = 0; i < allFeeds.length; i++){
+            
             allFeeds.forEach(function(feed){
-              //  var feed = allFeeds[i];
                 expect(feed.name).toBeTruthy();
-            })
+            });
         });
     });
 
